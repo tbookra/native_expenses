@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import CustomInput from "./CustomInput";
 import { useState } from "react";
+import CustomButton from "../UI/CustomButton";
 
-const ExpenseForm = () => {
+const ExpenseForm = ({onCancel,onSubmit,submitButtonHandler}) => {
     const [inputValues,setInputValues] = useState({
         amount:"",
         date:"",
@@ -14,6 +15,14 @@ const ExpenseForm = () => {
         [inputIdentifier]:enteredAmount
     }))
   };
+  const submitHandler = () => {
+    const expenseData = {
+        amount:+inputValues.amount,
+        date: new Date(inputValues.date),
+        description: inputValues.description
+    }
+    onSubmit(expenseData)
+  }
   return (
     <View style={styles.form}>
         <Text style={styles.title}>Your Expense</Text>
@@ -43,13 +52,24 @@ const ExpenseForm = () => {
         label="Description"
         textInputConfig={{
             value:inputValues.description,
-          keyboardType: "decimal-pad",
           onChangeText: inputChangeHandler.bind(this,"description"),
           multiline: true,
           autoCapitalize: "none",
           //   autoCorrect: "false"
         }}
       />
+      <View style={styles.buttons}>
+        <CustomButton
+          mode="flat"
+          onPress={onCancel}
+          style={styles.buttonStyle}
+        >
+          Cancel
+        </CustomButton>
+        <CustomButton onPress={submitHandler} style={styles.buttonStyle}>
+          {submitButtonHandler}
+        </CustomButton>
+      </View>
     </View>
   );
 };
@@ -73,5 +93,14 @@ const styles = StyleSheet.create({
   },
   row: {
     flex: 1,
+  },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonStyle: {
+    minWidth: 120,
+    marginHorizontal: 8,
   },
 });
